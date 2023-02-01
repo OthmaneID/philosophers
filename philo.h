@@ -6,7 +6,7 @@
 /*   By: oidboufk <oidboufk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/20 12:37:30 by oidboufk          #+#    #+#             */
-/*   Updated: 2023/01/31 16:48:33 by oidboufk         ###   ########.fr       */
+/*   Updated: 2023/02/01 16:34:01 by oidboufk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef struct s_philo
 	pthread_t		death_check;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	*mutex_ts;
+	pthread_mutex_t	test;
 	int				*nb_eat;
 	long			nb_philo;
 	double			*last_eat_ts;
@@ -47,4 +48,5 @@ pthread_t	*allocate(int len, pthread_mutex_t **forks,
 void		destroy_allocation(pthread_t **philo, pthread_mutex_t **forks,
 				pthread_mutex_t **mutex_ts, double	**last_eat_ts);
 int			check_nb_eat(t_philo *philo);
+int			handle_args(int ac, char **av);
 #endif /* PHILO_H */

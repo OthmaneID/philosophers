@@ -6,7 +6,7 @@
 /*   By: oidboufk <oidboufk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 14:40:04 by oidboufk          #+#    #+#             */
-/*   Updated: 2023/01/31 16:51:34 by oidboufk         ###   ########.fr       */
+/*   Updated: 2023/02/01 16:48:07 by oidboufk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ double	timestamp(struct timeval start)
 int	action(int id, t_philo *philo, struct timeval start, char *str)
 {
 	(void)philo;
-	printf("%.0f ms philosopher_%d %s\n", timestamp(start), id, str);
+	printf("%.0f %d %s\n", timestamp(start), id, str);
 	return (0);
 }
 
@@ -40,8 +40,16 @@ void	*routine(void *arg)
 	philo = (t_philo *)arg;
 	id = philo->id;
 	start = philo->start;
+	if (id % 2)
+		usleep(100);
 	while (1)
+	{
+		pthread_mutex_lock(&philo->mutex_ts[id]);
+		if (philo->nb_eat[id] >= philo->nb_to_eat && philo->nb_to_eat != -1)
+			return (pthread_mutex_unlock(&philo->mutex_ts[id]), NULL);
+		pthread_mutex_unlock(&philo->mutex_ts[id]);
 		complete_job(id, philo, start);
+	}
 	return (NULL);
 }
 
@@ -55,6 +63,7 @@ void	init_philos(t_philo *philo, int ac, char *av[])
 		philo->time_to_die = ft_atoi(av[2]);
 		philo->time_of_eat = ft_atoi(av[3]) * 1000;
 		philo->time_of_sleep = ft_atoi(av[4]) * 1000;
+		pthread_mutex_init(&philo->test, NULL);
 		if (ac == 6)
 			philo->nb_to_eat = ft_atoi(av[5]);
 		else
@@ -74,6 +83,8 @@ int	main(int ac, char *av[])
 	t_philo		philo;
 	int			i;
 
+	if (!handle_args(ac, av))
+		return (printf("invalid args!"), 1);
 	i = -1;
 	philo.nb_philo = (gettimeofday(&philo.start, NULL), ft_atoi(av[1]));
 	philo.philosophers = allocate(philo.nb_philo, &philo.forks,
@@ -87,7 +98,7 @@ int	main(int ac, char *av[])
 			perror("ERROR : thread creation . \n");
 		else if (pthread_detach(philo.philosophers[i]))
 			perror("ERROR : thread detaching problem . \n");
-		usleep(150);
+		usleep(50);
 	}
 	check_death(&philo);
 	destroy_allocation(&philo.philosophers, &philo.forks, &philo.mutex_ts,

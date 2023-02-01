@@ -6,7 +6,7 @@
 /*   By: oidboufk <oidboufk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/26 18:03:21 by oidboufk          #+#    #+#             */
-/*   Updated: 2023/01/31 18:47:41 by oidboufk         ###   ########.fr       */
+/*   Updated: 2023/02/01 15:56:00 by oidboufk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ long	ft_atoi(char *str)
 
 void	check_death(t_philo	*philo)
 {
-	int		i;
+	int	i;
 
 	i = philo->nb_philo;
 	while (i == philo->nb_philo)
@@ -51,17 +51,15 @@ void	check_death(t_philo	*philo)
 				if (check_nb_eat(philo))
 					return ;
 			pthread_mutex_unlock(&philo->mutex_ts[i]);
+			ft_usleep(5000 / philo->nb_philo);
 		}
-		ft_usleep(6000 / philo->nb_philo);
 	}
 }
 
 void	complete_job(int id, t_philo *philo, struct timeval start)
 {
-	action(id + 1, philo, start, "is thinking");
 	pthread_mutex_lock(&philo->forks[id]);
 	action(id + 1, philo, start, "has taken a fork");
-	action(id + 1, philo, start, "is thinking");
 	pthread_mutex_lock(&philo->forks[(id + 1) % philo->nb_philo]);
 	action(id + 1, philo, start, "has taken a fork");
 	action(id + 1, philo, start, "is eating");
@@ -74,6 +72,8 @@ void	complete_job(int id, t_philo *philo, struct timeval start)
 	pthread_mutex_unlock(&philo->forks[(id + 1) % philo->nb_philo]);
 	action(id + 1, philo, start, "is sleeping");
 	ft_usleep(philo->time_of_sleep);
+	action(id + 1, philo, start, "is thinking");
+	
 }
 
 void	ft_usleep(useconds_t time)
@@ -95,8 +95,6 @@ void	ft_usleep(useconds_t time)
 			usleep(time);
 			break ;
 		}
-		printf("amount: %.0f sleept:%.0f  time:%.0u\n", amount, sleept, time);
-		amount += (amount - sleept);
 		time -= sleept;
 	}
 }
@@ -107,10 +105,10 @@ pthread_t	*allocate(int len, pthread_mutex_t **forks
 {
 	pthread_t	*philo;
 
-	(*forks) = malloc((len + 1) * sizeof(pthread_mutex_t));
-	(*mutex_ts) = malloc((len + 1) * sizeof(pthread_mutex_t));
-	(*last_eat_ts) = malloc((len + 1) * sizeof(double));
-	philo = malloc((len + 1) * sizeof(pthread_t));
+	(*forks) = malloc(((size_t)len + 1) * sizeof(pthread_mutex_t));
+	(*mutex_ts) = malloc(((size_t)len + 1) * sizeof(pthread_mutex_t));
+	(*last_eat_ts) = malloc(((size_t)len + 1) * sizeof(double));
+	philo = malloc(((size_t)len + 1) * sizeof(pthread_t));
 	return (philo);
 }
 

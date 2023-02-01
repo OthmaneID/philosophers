@@ -1,6 +1,6 @@
 NAME = philo
 
-FILES = main.c utiles.c utiles_2.c
+FILES = main.c utiles.c utiles_2.c handle.c
 
 OBJ = ${FILES:.c=.o}
 
