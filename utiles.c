@@ -6,7 +6,7 @@
 /*   By: oidboufk <oidboufk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/26 18:03:21 by oidboufk          #+#    #+#             */
-/*   Updated: 2023/02/01 15:56:00 by oidboufk         ###   ########.fr       */
+/*   Updated: 2023/02/01 18:11:45 by oidboufk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,6 @@ void	complete_job(int id, t_philo *philo, struct timeval start)
 	action(id + 1, philo, start, "is sleeping");
 	ft_usleep(philo->time_of_sleep);
 	action(id + 1, philo, start, "is thinking");
-	
 }
 
 void	ft_usleep(useconds_t time)
@@ -81,10 +80,8 @@ void	ft_usleep(useconds_t time)
 	struct timeval	start;
 	double			amount;
 	double			sleept;
-	double			var;
 
 	amount = time / 1000;
-	var = amount;
 	while (time > 0)
 	{
 		gettimeofday(&start, NULL);
@@ -111,10 +108,3 @@ pthread_t	*allocate(int len, pthread_mutex_t **forks
 	philo = malloc(((size_t)len + 1) * sizeof(pthread_t));
 	return (philo);
 }
-
-// to check the death of the thread i think i have to make a global thread
-// that checks for the death of every thread 
-
-// to die is 800 ms and last_time_eats_ts is 123890 ms and
-// the current is 124500 ms to know how much the philosopher 
-// spend without eating (current_ts - last_time_eat) here it's 
