@@ -6,7 +6,7 @@
 /*   By: oidboufk <oidboufk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 15:34:52 by oidboufk          #+#    #+#             */
-/*   Updated: 2023/01/31 16:54:47 by oidboufk         ###   ########.fr       */
+/*   Updated: 2023/02/02 10:54:07 by oidboufk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,18 @@ int	check_nb_eat(t_philo *philo)
 {
 	int	i;
 	int	count;
+	int	nb;
 
 	i = -1;
 	count = 0;
 	while (++i < philo->nb_philo)
-		if (philo->nb_eat[i] >= philo->nb_to_eat)
+	{
+		pthread_mutex_lock(&philo->mutex_ts[i]);
+		nb = philo->nb_eat[i];
+		pthread_mutex_unlock(&philo->mutex_ts[i]);
+		if (nb >= philo->nb_to_eat)
 			count++;
+	}
 	if (count == philo->nb_philo)
 		return (1);
 	else

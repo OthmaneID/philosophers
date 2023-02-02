@@ -6,7 +6,7 @@
 /*   By: oidboufk <oidboufk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/26 18:03:21 by oidboufk          #+#    #+#             */
-/*   Updated: 2023/02/01 18:11:45 by oidboufk         ###   ########.fr       */
+/*   Updated: 2023/02/02 10:55:29 by oidboufk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,11 +47,11 @@ void	check_death(t_philo	*philo)
 				action(i + 1, philo, philo->start, "died");
 				return ;
 			}
+			pthread_mutex_unlock(&philo->mutex_ts[i]);
+			ft_usleep(5000 / philo->nb_philo);
 			if (philo->nb_to_eat != -1)
 				if (check_nb_eat(philo))
 					return ;
-			pthread_mutex_unlock(&philo->mutex_ts[i]);
-			ft_usleep(5000 / philo->nb_philo);
 		}
 	}
 }
