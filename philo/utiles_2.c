@@ -6,7 +6,7 @@
 /*   By: oidboufk <oidboufk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 15:34:52 by oidboufk          #+#    #+#             */
-/*   Updated: 2023/02/02 10:54:07 by oidboufk         ###   ########.fr       */
+/*   Updated: 2023/02/15 20:31:15 by oidboufk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,14 @@ void	destroy_allocation(pthread_t **philo, pthread_mutex_t **forks
 		free(*mutex_ts);
 	if (*last_eat_ts)
 		free(*last_eat_ts);
+}
+
+long	gettime(void)
+{
+	struct timeval	tv;
+	long			end;
+
+	gettimeofday(&tv, NULL);
+	end = (tv.tv_sec * 1000000) + tv.tv_usec;
+	return (end);
 }

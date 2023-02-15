@@ -6,7 +6,7 @@
 /*   By: oidboufk <oidboufk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/24 14:40:04 by oidboufk          #+#    #+#             */
-/*   Updated: 2023/02/01 16:48:07 by oidboufk         ###   ########.fr       */
+/*   Updated: 2023/02/15 21:33:21 by oidboufk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,9 @@ double	timestamp(struct timeval start)
 
 int	action(int id, t_philo *philo, struct timeval start, char *str)
 {
-	(void)philo;
+	pthread_mutex_lock(&philo->print);
 	printf("%.0f %d %s\n", timestamp(start), id, str);
+	pthread_mutex_unlock(&philo->print);
 	return (0);
 }
 
@@ -41,7 +42,7 @@ void	*routine(void *arg)
 	id = philo->id;
 	start = philo->start;
 	if (id % 2)
-		usleep(100);
+		usleep(50);
 	while (1)
 	{
 		pthread_mutex_lock(&philo->mutex_ts[id]);
@@ -63,7 +64,7 @@ void	init_philos(t_philo *philo, int ac, char *av[])
 		philo->time_to_die = ft_atoi(av[2]);
 		philo->time_of_eat = ft_atoi(av[3]) * 1000;
 		philo->time_of_sleep = ft_atoi(av[4]) * 1000;
-		pthread_mutex_init(&philo->test, NULL);
+		pthread_mutex_init(&philo->print, NULL);
 		if (ac == 6)
 			philo->nb_to_eat = ft_atoi(av[5]);
 		else
@@ -98,11 +99,8 @@ int	main(int ac, char *av[])
 			perror("ERROR : thread creation . \n");
 		else if (pthread_detach(philo.philosophers[i]))
 			perror("ERROR : thread detaching problem . \n");
-		usleep(50);
+		usleep(100);
 	}
 	check_death(&philo);
-	destroy_allocation(&philo.philosophers, &philo.forks, &philo.mutex_ts,
-		&philo.last_eat_ts);
-	free(philo.nb_eat);
 	return (0);
 }

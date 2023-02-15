@@ -6,7 +6,7 @@
 /*   By: oidboufk <oidboufk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/26 18:03:21 by oidboufk          #+#    #+#             */
-/*   Updated: 2023/02/02 10:55:29 by oidboufk         ###   ########.fr       */
+/*   Updated: 2023/02/15 20:54:20 by oidboufk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ void	check_death(t_philo	*philo)
 			if (timestamp(philo->start) - philo->last_eat_ts[i]
 				>= philo->time_to_die)
 			{
-				action(i + 1, philo, philo->start, "died");
+				pthread_mutex_lock(&philo->print);
+				printf("%.0f %d died\n", timestamp(philo->start), i + 1);
 				return ;
 			}
 			pthread_mutex_unlock(&philo->mutex_ts[i]);
@@ -75,26 +76,29 @@ void	complete_job(int id, t_philo *philo, struct timeval start)
 	action(id + 1, philo, start, "is thinking");
 }
 
-void	ft_usleep(useconds_t time)
+void	ft_usleep(long time)
 {
-	struct timeval	start;
-	double			amount;
-	double			sleept;
+	long	end;
 
-	amount = time / 1000;
-	while (time > 0)
-	{
-		gettimeofday(&start, NULL);
-		usleep(amount);
-		sleept = timestamp(start) * 1000;
-		if (sleept > time)
-		{
-			usleep(time);
-			break ;
-		}
-		time -= sleept;
-	}
+	end = gettime() + time;
+	while (gettime() < end)
+		usleep(50);
 }
+// void	ft_usleep(long time)
+// {
+// 	struct timeval	start;
+// 	double			amount;
+// 	double			sleept;
+
+// 	amount = time / 1000;
+// 	while (time >= amount)
+// 	{
+// 		gettimeofday(&start, NULL);
+// 		usleep(amount);
+// 		sleept = timestamp(start) * 1000;
+// 		time -= sleept;
+// 	}
+// }
 
 //return a philo pointer
 pthread_t	*allocate(int len, pthread_mutex_t **forks
