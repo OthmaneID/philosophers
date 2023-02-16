@@ -1,4 +1,4 @@
-FILES = main.c handle_args.c
+FILES = main.c handle_args.c utiles.c
 
 NAME = philo_bonus
 

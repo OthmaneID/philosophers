@@ -6,7 +6,7 @@
 /*   By: oidboufk <oidboufk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 21:45:36 by oidboufk          #+#    #+#             */
-/*   Updated: 2023/02/16 11:30:16 by oidboufk         ###   ########.fr       */
+/*   Updated: 2023/02/16 12:12:01 by oidboufk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <pthread.h>
+# include <time.h>
+# include <string.h>
+# include <sys/time.h>
 
 typedef struct s_philo
 {
@@ -28,8 +31,14 @@ typedef struct s_philo
 	int				time_to_sleep;
 	int				time_to_die;
 	int				time_to_eat;
+	int				nb_to_eat;
+	double			last_eat;
+	struct timevl	start;
+	double			last_eat;
 }	t_philo;
 
 long	ft_atoi(char *str);
 int		handle_args(int ac, char **av);
+void	ft_usleep(long time);
+double	timestamp(struct timeval start);
 #endif

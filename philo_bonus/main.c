@@ -6,16 +6,15 @@
 /*   By: oidboufk <oidboufk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 21:41:57 by oidboufk          #+#    #+#             */
-/*   Updated: 2023/02/16 11:45:40 by oidboufk         ###   ########.fr       */
+/*   Updated: 2023/02/16 12:14:23 by oidboufk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	*check_death(void *arg)
+void	*check_death(void *philo)
 {
-	(void)arg;
-	//exit(0);
+	philo = (t_philo *)philo;
 	return (NULL);
 }
 
@@ -33,6 +32,7 @@ void	process(t_philo	philo)
 		printf("philosopher_%d has taken a fork.\n", philo.id);
 		printf("philosopher_%d is eating.\n", philo.id);
 		usleep(philo.time_to_eat);
+		philo.last_eat = timestamp(philo.start);
 		sem_post(philo.sem);
 		sem_post(philo.sem);
 		printf("philosopher_%d is sleeping.\n", philo.id);
@@ -41,11 +41,15 @@ void	process(t_philo	philo)
 	exit(0);
 }
 
-void	init(t_philo *philo, char *av[])
+void	init(t_philo *philo, char *av[], int ac)
 {
 	philo->time_to_die = ft_atoi(av[2]);
 	philo->time_to_eat = ft_atoi(av[3]) * 1000;
-	philo->time_to_sleep = ft_atoi(av[3]) * 1000;
+	philo->time_to_sleep = ft_atoi(av[4]) * 1000;
+	philo->last_eat = 0;
+	gettimeofday(&philo->start, NULL);
+	if (ac == 6)
+		philo->nb_to_eat = ft_atoi(av[5]);
 }
 
 int	main(int ac, char *av[])
@@ -55,7 +59,7 @@ int	main(int ac, char *av[])
 
 	if (!handle_args(ac, av))
 		return (printf("invalid args!\n"), 0);
-	(sem_unlink("forks"), init(&philo, av));
+	(sem_unlink("forks"), init(&philo, av, ac));
 	philo.sem = sem_open("forks", O_CREAT | O_EXCL, 0666, ft_atoi(av[1]));
 	i = 0;
 	while (i++ < ft_atoi(av[1]))
