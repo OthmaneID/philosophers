@@ -6,40 +6,70 @@
 /*   By: oidboufk <oidboufk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 21:41:57 by oidboufk          #+#    #+#             */
-/*   Updated: 2023/02/16 10:54:39 by oidboufk         ###   ########.fr       */
+/*   Updated: 2023/02/16 11:45:40 by oidboufk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	philo(sem_t *sem)
+void	*check_death(void *arg)
 {
-	sem_wait(sem);
-	printf("proccessor is in\n");
-	sleep(1);
-	sem_post(sem);
-	sem_close(sem);
+	(void)arg;
+	//exit(0);
+	return (NULL);
+}
+
+void	process(t_philo	philo)
+{
+	if (pthread_create(&philo.check, NULL, check_death, &philo))
+		(printf("Can't Create thread.\n"), exit(0));
+	else
+		pthread_detach(philo.check);
+	while (1)
+	{
+		sem_wait(philo.sem);
+		printf("philosopher_%d has taken a fork.\n", philo.id);
+		sem_wait(philo.sem);
+		printf("philosopher_%d has taken a fork.\n", philo.id);
+		printf("philosopher_%d is eating.\n", philo.id);
+		usleep(philo.time_to_eat);
+		sem_post(philo.sem);
+		sem_post(philo.sem);
+		printf("philosopher_%d is sleeping.\n", philo.id);
+		usleep(philo.time_to_sleep);
+	}
 	exit(0);
+}
+
+void	init(t_philo *philo, char *av[])
+{
+	philo->time_to_die = ft_atoi(av[2]);
+	philo->time_to_eat = ft_atoi(av[3]) * 1000;
+	philo->time_to_sleep = ft_atoi(av[3]) * 1000;
 }
 
 int	main(int ac, char *av[])
 {
-	int		pid;
-	sem_t	*sem;
+	t_philo	philo;
+	int		i;
 
-	(void)ac;
-	(void)av;
+	if (!handle_args(ac, av))
+		return (printf("invalid args!\n"), 0);
+	(sem_unlink("forks"), init(&philo, av));
+	philo.sem = sem_open("forks", O_CREAT | O_EXCL, 0666, ft_atoi(av[1]));
+	i = 0;
+	while (i++ < ft_atoi(av[1]))
+	{
+		philo.id = i;
+		philo.pid = fork();
+		if (philo.pid == 0)
+			process(philo);
+		usleep(150);
+	}
+	sem_close(philo.sem);
 	sem_unlink("forks");
-	sem = sem_open("forks", O_CREAT | O_EXCL, S_IRUSR | S_IWUSR, 1);
-	pid = fork();
-	if (pid == 0)
-		philo(sem);
-	pid = fork();
-	if (pid == 0)
-		philo(sem);
-	sem_close(sem);
-	sem_unlink("forks");
-	wait(NULL);
-	wait(NULL);
+	i = 0;
+	while (i++ < ft_atoi(av[1]))
+		wait(NULL);
 	return (0);
 }
