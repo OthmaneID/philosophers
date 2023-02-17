@@ -6,11 +6,21 @@
 /*   By: oidboufk <oidboufk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/16 12:08:27 by oidboufk          #+#    #+#             */
-/*   Updated: 2023/02/16 12:09:50 by oidboufk         ###   ########.fr       */
+/*   Updated: 2023/02/16 15:16:59 by oidboufk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+
+long	gettime(void)
+{
+	struct timeval	tv;
+	long			end;
+
+	gettimeofday(&tv, NULL);
+	end = (tv.tv_sec * 1000000) + tv.tv_usec;
+	return (end);
+}
 
 void	ft_usleep(long time)
 {
