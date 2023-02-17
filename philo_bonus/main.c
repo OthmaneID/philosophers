@@ -6,7 +6,7 @@
 /*   By: oidboufk <oidboufk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 21:41:57 by oidboufk          #+#    #+#             */
-/*   Updated: 2023/02/17 11:01:47 by oidboufk         ###   ########.fr       */
+/*   Updated: 2023/02/17 15:45:49 by oidboufk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,15 @@ void	*check_death(void *philo)
 				timestamp(((t_philo *)philo)->start), ((t_philo *)philo)->id);
 			exit(0);
 		}
-		ft_usleep(1000);
+		ft_usleep(2000);
 	}
 	return (NULL);
 }
 
 void	process(t_philo	philo)
 {
+	if (!(philo.id % 2))
+		usleep(50);
 	if (pthread_create(&philo.check, NULL, check_death, &philo))
 		(printf("Can't Create thread.\n"), exit(0));
 	pthread_detach(philo.check);
@@ -52,13 +54,13 @@ void	process(t_philo	philo)
 		sem_wait(philo.sem);
 		action(philo.id, &philo, "has taken a fork");
 		action(philo.id, &philo, "is eating");
-		usleep(philo.time_to_eat);
 		philo.last_eat = timestamp(philo.start);
 		philo.eats++;
+		ft_usleep(philo.time_to_eat);
 		sem_post(philo.sem);
 		sem_post(philo.sem);
 		action(philo.id, &philo, "is sleeping");
-		usleep(philo.time_to_sleep);
+		ft_usleep(philo.time_to_sleep);
 		action(philo.id, &philo, "is thinking");
 		if (philo.nb_to_eat != -1 && philo.eats == philo.nb_to_eat)
 			exit(1);
@@ -97,7 +99,7 @@ int	main(int ac, char *av[])
 		philo.id = i + 1;
 		philo.pid[i] = fork();
 		((philo.pid[i] == 0) && (process(philo), 0));
-		usleep(150);
+		ft_usleep(100);
 	}
 	i = -1;
 	(sem_close(philo.sem), sem_unlink("forks"));

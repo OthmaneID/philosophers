@@ -6,7 +6,7 @@
 /*   By: oidboufk <oidboufk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/16 12:08:27 by oidboufk          #+#    #+#             */
-/*   Updated: 2023/02/16 15:16:59 by oidboufk         ###   ########.fr       */
+/*   Updated: 2023/02/17 15:17:32 by oidboufk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	ft_usleep(long time)
 
 	end = gettime() + time;
 	while (gettime() < end)
-		usleep(50);
+		usleep(25);
 }
 
 double	timestamp(struct timeval start)
